@@ -1,0 +1,45 @@
+﻿@page "/Products"
+
+@inject NavigationManager navigationManager
+@inject IProdModelService _productService
+@inject ICategoryService _catService
+@inject IJSRuntime iJSRuntime
+
+<EditProduct  product="@prodModel" parentProductModel="getChildProductModel"></EditProduct>
+
+
+
+<ProductsList prodModelList="prodModelList" ParentProductModel="getChildProductListModel" @ref="_prodModelList" />
+@code {
+
+    List<ProductModel> prodModelList = new List<ProductModel>();
+
+    List<Category> categoriesList = new List<Category>();
+
+    ProductModel prodModel = new ProductModel();
+    //Author author = new Author()
+    ProductsList _prodModelList;
+
+
+    private void getChildProductModel(ProductModel prod)
+    {
+        prodModelList.Add(prodModel);
+        prodModel = new ProductModel();
+        StateHasChanged();
+    }
+    private void getChildProductListModel(ProductModel prod)
+    {
+        prodModel = prod;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _productService.getAllProducts();
+        var categoryList = await _catService.getAllCategories();
+        //if (result != null) prodModel = result;
+       prodModelList = result;
+        categoriesList = categoryList;
+    }
+
+}

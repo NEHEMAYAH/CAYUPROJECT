@@ -1,0 +1,188 @@
+﻿@page "/MyProfile"
+@inject NavigationManager navigationManager
+@inject IProfileService _customerService
+@inject ICategoryService _catService
+@inject IJSRuntime iJSRuntime
+<!-- Content -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="mx-auto d-flex justify-content-center col-12">
+            <!-- Products Grid -->
+            <section class="section mt-4">
+                <div class=" mx-auto card col-12" style="min-width:900px;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Add / Update Orders</h5>
+                        <hr />
+                        <EditForm Model="customer" OnValidSubmit="saveProdData">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <div class="md-form">
+                                <div class="text-primary">Order ID</div>
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <InputNumber disabled="@IsDisabled" type="text" @bind-Value="customer.customerId" class="form-control" />
+                                <ValidationMessage For="@(() => customer.customerId)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+                            <div class="md-form">
+                                <div class="text-primary">Customer Name</div>
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <InputText type="text" @bind-Value="customer.name" class="form-control" />
+                                <ValidationMessage For="@(() => customer.name)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+
+                            <div class="md-form">
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <div class="text-primary">Contact No</div>
+                                <InputText type="text" @bind-Value="customer.contact" class="form-control" />
+                                <ValidationMessage For="@(() => customer.contact)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+                            <div class="md-form">
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <div class="text-primary">Address</div>
+                                <InputText @bind-Value="customer.address" class="form-control" />
+                                <ValidationMessage For="@(() => customer.address)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+                            <div class="md-form ">
+                                <div class="mx-auto col-md-12 text-center">
+                                    <button @onclick="(() => SaveCustomer(customer))" type="button" class="btn btn-outline-primary waves-effect">Add</button>
+                                    <button @onclick="(() => UpdateCustomer(customer))" type="button" class="btn btn-outline-success waves-effect">Update</button>
+                                </div>
+
+                                @*<button type="button" class="btn btn-outline-default waves-effect">Create</button>*@
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <!-- Content -->
+
+        <div class="mx-auto d-flex justify-content-center col-12">
+            <!-- Products Grid -->
+            <section class="section mt-4">
+                <div class=" mx-auto card col-12" style="width:900px;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"><strong>Customer List</strong></h5>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Product Id</th>
+                                                <th> ID</th>
+                                                <th> Name</th>
+                                                <th> Contact No</th>
+                                                <th>Address</th>
+                                                <th class="text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var prod in customerList)
+                                            {
+                                            <tr class="text-center">
+                                                <td class="text-center">@prod.customerId</td>
+                                                @*<td>
+            <NavLink class="nav-link" href=@string.Format("/Pages/Product//{0}", prod.productId)>
+                <span class="oi oi-list-rich" aria-hidden="true"></span> @prod.productId
+            </NavLink>
+        </td>*@
+                                                <td>@prod.name</td>
+
+                                                <td>@prod.contact</td>
+                                                <td>@prod.address</td>
+                                                
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" @onclick="(() => EditCustomer(prod))" class="btn btn-success btn-just-icon btn-sm" data-original-title="" title="">
+                                                        <i class="fa fas-edit">Edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" @onclick="(() =>  DeleteCustomer(prod))" class="btn btn-danger btn-just-icon btn-sm" data-original-title="" title="">
+                                                        <i class="fa fas-trash">delete</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    protected bool IsDisabled { get; set; } = true;
+
+    Customer customer = new Customer();
+
+    List<Customer> customerList = new List<Customer>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _customerService.getAllCustomers();
+        //var categoryList = await _catService.getAllCategories();
+        //if (result != null) prodModel = result;
+        customerList = result;
+        //categoriesList = categoryList;
+    }
+
+    private async Task EditCustomer(Customer model)
+    {
+
+        // await _customerService.updateCustomer(model);
+        customer = model;
+        //ParentProductModel(prodModel);
+        //StateHasChanged();
+    }
+    private async Task DeleteCustomer(Customer model)
+    {
+        await _customerService.deleteCustomer(model); //deleteProduct
+        var result = await _customerService.getAllCustomers();
+        customerList = result;
+        StateHasChanged();
+
+    }
+    public async void SaveCustomer(Customer model)
+    {
+        await _customerService.addCustomer(model);
+        var result = await _customerService.getAllCustomers();
+        customerList = result;
+        customer = new Customer();
+        StateHasChanged();
+        //base.OnInitialized();
+
+
+    }
+    public async void UpdateCustomer(Customer model)
+    {
+        await _customerService.updateCustomer(model);
+        StateHasChanged();
+
+    }
+
+    public void getAllCustomers()
+    {
+
+    }
+
+    public async void saveProdData() { } // form submit method
+}

@@ -1,0 +1,120 @@
+﻿@page "/ProductsList"
+@inject IProdModelService ProdModelService
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <!-- Content -->
+
+        <div class="mx-auto d-flex justify-content-center col-12">
+            <!-- Products Grid -->
+            <section class="section mt-4">
+                <div class=" mx-auto card col-12" style="width:900px;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"><strong>Product List</strong></h5>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+                                
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Product Id</th>
+                                                <th>Product Name</th>
+                                                <th>Category Name</th>
+                                                <th>Product Price</th>
+                                                <th>Image</th>
+                                                <th class="text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var prod in prodModelList)
+                                            {
+                                            <tr class="text-center">
+                                                <td class="text-center">@prod.productId</td>
+                                                @*<td>
+                                                    <NavLink class="nav-link" href=@string.Format("/Pages/Product//{0}", prod.productId)>
+                                                        <span class="oi oi-list-rich" aria-hidden="true"></span> @prod.productId
+                                                    </NavLink>
+                                                </td>*@
+                                                <td>@prod.product_name</td>
+                                                <td>@($"{(prod.categoryId == 1 ? "electronics" : "name")}")</td>
+                                                <td>$ @prod.productPrice</td>
+                                                <td><img class="image-responsive" style="width:50px" src="@prod.productUrl"/></td>
+
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" @onclick="(() => EditProduct(prod))" class="btn btn-success btn-just-icon btn-sm" data-original-title="" title="">
+                                                        <i class="fa fas-edit">Edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" @onclick="(() =>  DeleteProduct(prod))" class="btn btn-danger btn-just-icon btn-sm" data-original-title="" title="">
+                                                        <i class="fa fas-trash">delete</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public EventCallback<int> OnEmployeeDeleted { get; set; }
+
+    //[Inject]
+    //public IEmployeeService EmployeeService { get; set; }
+
+    [Parameter]
+    public List<ProductModel> prodModelList { get; set; }
+
+    //List<ProductModel> prodModelList = new List<ProductModel>();
+    public ProductModel prodModel = new ProductModel();
+
+    [Parameter]
+    public Action<ProductModel> ParentProductModel { get; set; }
+
+    private bool ShowErrors;
+    private string Error = "";
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    var result = await ProdModelService.getAllProducts();
+    //    //if (result != null) prodModel = result;
+    //    prodModelList = result;
+    //}
+
+    private async Task sendProdData()
+    {
+
+    }
+    private async Task getProdData()
+    {
+
+    }
+    private async Task EditProduct(ProductModel model)
+    {
+        prodModel = model;
+        ParentProductModel(prodModel);
+        //StateHasChanged();
+    }
+    private async Task DeleteProduct(ProductModel model)
+    {
+        await ProdModelService.deleteProduct(model); //deleteProduct
+    }
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+}

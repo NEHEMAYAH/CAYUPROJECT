@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+
+<div class="container">
+    @*<div class="sidebar">
+            <NavMenu />
+        </div>*@
+
+    <div class="container">
+        <div class="navbar fixed-top navbar-expand-lg  navbar-light scrolling-navbar white">
+            <LoginDisplay />
+        </div>
+
+        <div class="container">
+
+            <div class="row pt-4">
+
+                <!-- Content -->
+                <div class="col-lg-12">
+
+                    <!-- Products Grid -->
+                    <section class="section pt-4 mt-4">
+                        @Body
+                        </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

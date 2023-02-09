@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Pages\Product\**" />
+	  <Content Remove="Pages\Product\**" />
+	  <EmbeddedResource Remove="Pages\Product\**" />
+	  <None Remove="Pages\Product\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.8" PrivateAssets="all" />
+		<PackageReference Include="Syncfusion.Blazor.Core" Version="20.3.0.59" />
+		<PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.3.0.59" />
+		<PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.9" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Shared\AddIdentityWasm.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Pages\AboutUS\" />
+	  <Folder Include="Pages\Summary\" />
+	</ItemGroup>
+
+
+</Project>

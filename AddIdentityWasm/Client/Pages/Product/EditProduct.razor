@@ -1,0 +1,137 @@
+﻿@page "/productDataEntry"
+@inject IProdModelService ProdModelService
+
+    <!-- Content -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="mx-auto d-flex justify-content-center col-12">
+            <!-- Products Grid -->
+            <section class="section mt-4">
+                <div class=" mx-auto card col-12" style="min-width:900px;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Add / Update Product</h5>
+                        <hr />
+                        <EditForm Model="product" OnValidSubmit="saveProdData">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <div class="md-form">
+                                <div class="text-primary">Product Name</div>
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <InputText type="text" @bind-Value="product.product_name" class="form-control" />
+                                <ValidationMessage For="@(() => product.product_name)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+                            <div class="md-form">
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                @*<InputNumber type="decimal" @bind-Value="product.productPrice" class="form-control" />
+            <ValidationMessage For="@(() => product.productPrice)" />*@
+                                <div class="text-primary">category</div>
+                                <select type="text" class="form-control" @bind="product.productId">
+                                    @if (product?.productId != null)
+                                    {
+                                        @*@foreach (var prod in list)
+                    {
+                        <option value="@prod">@prod</option>
+                    }*@
+                                        <option value="1">Electronics</option>
+                                        <option value="2">Mobile</option>
+                                        <option value="3">Laptops</option>
+
+                                    }
+                                </select>
+                                @*<label for="defaultForm-email">Your email</label>*@
+                                @*<AddIdentityWasm.Client.Pages.Custom.DDLCategory @bind-item="@Param"></AddIdentityWasm.Client.Pages.Custom.DDLCategory>*@
+                            </div>
+                            <div class="md-form">
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <div class="text-primary">category</div>
+                                <InputNumber type="text" @bind-Value="product.categoryId" class="form-control" />
+                                <ValidationMessage For="@(() => product.categoryId)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+                            <div class="md-form">
+                                @*<i class="fas fa-envelope prefix grey-text"></i>*@
+                                <div class="text-primary">Product Price</div>
+                                <InputNumber @bind-Value="product.productPrice" class="form-control" />
+                                <ValidationMessage For="@(() => product.productPrice)" />
+                                @*<label for="defaultForm-email">Your email</label>*@
+                            </div>
+                            <div class="md-form ">
+                                <div class="mx-auto col-md-12 text-center">
+                                    <button @onclick="(() => SaveProduct(product))" type="button" class="btn btn-outline-primary waves-effect">Add</button>
+                                    <button @onclick="(() => UpdateProduct(product))" type="button" class="btn btn-outline-success waves-effect">Update</button>
+                                </div>
+                                
+                                @*<button type="button" class="btn btn-outline-default waves-effect">Create</button>*@
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+   
+   
+    @code {
+        [Parameter]
+        public ProductModel product { get; set; }
+
+        public IEnumerable<string> list = new List<string>()
+        {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+         };
+        [Parameter]
+        public  string Param { get; set; } = string.Empty ;
+
+        ProductModel prodModel = new ProductModel();
+
+
+        [Parameter]
+        public List<Category> categoryList { get; set; }
+
+        public string[] categories { get; set; }
+
+        [Parameter]
+        public string action { get; set; } = "save";
+
+        [Parameter]
+        public Action<ProductModel> parentProductModel { get; set; }
+
+        private bool isVisible { get; set; }
+        private string completeName { get; set; }
+        private bool Results { get; set; }
+
+        //private List<Category> = new List<Category>();
+
+        protected override void OnInitialized()
+        {
+            prodModel = product;
+            Param = Convert.ToString(product.categoryId);
+            base.OnInitialized();
+        }
+
+        public async void saveProdData() { } // form submit method
+        public async void SaveProduct(ProductModel prod)
+        {
+            Results = true;
+            isVisible = true;
+            await ProdModelService.addProduct(prod);
+            parentProductModel(prod);
+            prodModel = new ProductModel();
+            //base.OnInitialized();
+
+
+        }
+        public async void UpdateProduct(ProductModel prod)
+        {
+            await ProdModelService.updateProduct(prod);
+           
+
+
+        }
+    }
